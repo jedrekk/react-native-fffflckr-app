@@ -191,7 +191,6 @@ class FirstProject extends React.Component {
                 }}>
               <View
                 style={{
-                  marginTop: 18,
                   marginLeft: 15,
                   width: 32,
                   height: 40
@@ -208,7 +207,6 @@ class FirstProject extends React.Component {
               <Image
                 source={ require('./img/logo.png') }
                 style={{
-                  marginTop: 18,
                   width: 80,
                   height: 40,
                   alignSelf: 'center',
@@ -225,7 +223,6 @@ class FirstProject extends React.Component {
                 size={ 28 }
                 color='white'
                 style={{
-                  marginTop: 18,
                   marginRight: 15,
                   width: 32,
                   height: 40
@@ -250,6 +247,7 @@ class FirstProject extends React.Component {
 var styles = StyleSheet.create({
 
   header: {
+    borderTopWidth: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: 60,
