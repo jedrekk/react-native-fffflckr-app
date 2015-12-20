@@ -1,0 +1,19 @@
+{
+  "name": "FirstProject",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "react-native start"
+  },
+  "dependencies": {
+    "flickrapi": "^0.3.36",
+    "react-native": "^0.14.1",
+    "react-native-device-display": "^1.0.4",
+    "react-native-fs": "^1.1.0",
+    "react-native-invertible-scroll-view": "^0.1.2",
+    "react-native-open-settings": "0.0.2",
+    "react-native-overlay": "^0.3.0",
+    "react-native-responsive-image": "^1.0.0",
+    "react-native-scrollable-mixin": "^1.0.1"
+  }
+}
