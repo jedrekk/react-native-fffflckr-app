@@ -15,9 +15,11 @@ import React, {
   View,
   StatusBarIOS,
   ActivityIndicatorIOS,
-
   TouchableHighlight,
+  TouchableWithoutFeedback,
 } from 'react-native';
+
+import { Icon, } from "react-native-icons";
 
 
 import PhotoList from './PhotoList';
@@ -38,8 +40,6 @@ class FirstProject extends React.Component {
     this.state = {
       activityLoaderStatus: 0,
       popupHideTimeout: 0,
-      fullscreenImageVisible: false,
-      fullscreenImageURL: 'https://farm9.staticflickr.com/8168/7575773370_67e35816ea_c.jpg'
     }
   }
 
@@ -54,8 +54,7 @@ class FirstProject extends React.Component {
 
   touchHeader() {
     // console.log(this.refs.photoList)
-    this.setState({ fullscreenImageVisible: true })
-    // this.refs.photoList.scrollToTop();
+    this.refs.photoList.scrollToTop();
   }
 
   touchClearModal() {
@@ -84,22 +83,6 @@ class FirstProject extends React.Component {
 
 
       <View style={ styles.fullscreen }>
-        <Modal
-          style={ styles.fullscreen }
-          transparent={ false }
-          visible={ this.state.fullscreenImageVisible }>
-          <TouchableHighlight onPress={ this.closeFullScreen.bind(this) } style={ styles.fullscreen }>
-            <View style={ styles.fullscreen }>
-              <Image style={{
-                flex: 1,
-                borderWidth: 1,
-                borderColor: 'white',
-                transform: [{ rotate: '90deg' }],
-                backgroundColor: "black"
-                }} source={{ uri: this.state.fullscreenImageURL }} />
-            </View>
-          </TouchableHighlight>
-        </Modal>
         <Modal transparent={ true } visible={ this.state.activityLoaderStatus == LOADING_PHOTOS_FROM_FLICKR }>
           <View style={{
             flex: 1,
@@ -197,21 +180,62 @@ class FirstProject extends React.Component {
             </View>
           </TouchableHighlight>
         </Modal>
-        <TouchableHighlight onPress={ this.touchHeader.bind(this) } >
-          <View style={ styles.header }>
 
-            <Image
-              source={ require('./img/logo.png') }
-              style={{ 
+
+          <View style={ styles.header }>
+            <TouchableWithoutFeedback
+                style={{
+
+                  width: 32,
+                  height: 40
+                }}>
+              <View
+                style={{
+                  marginTop: 18,
+                  marginLeft: 15,
+                  width: 32,
+                  height: 40
+                }}
+                />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              style={{
                 width: 80,
                 height: 40,
-                flex: 1,
                 alignSelf: 'center',
                }}
-              />
+               onPress={ this.touchHeader.bind(this) } >
+              <Image
+                source={ require('./img/logo.png') }
+                style={{
+                  marginTop: 18,
+                  width: 80,
+                  height: 40,
+                  alignSelf: 'center',
+                 }}
+                />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+                style={{
+                  width: 32,
+                  height: 40
+                }}>
+              <Icon
+                name='ion|navicon-round'
+                size={ 28 }
+                color='white'
+                style={{
+                  marginTop: 18,
+                  marginRight: 15,
+                  width: 32,
+                  height: 40
+                }}
+                />
+            </TouchableWithoutFeedback>
           </View>
-        </TouchableHighlight>
         <PhotoList
+          style={{
+            flex: 1 }}
           fullscreenFunction = { this.setFullscreenImageVisible.bind(this) }
           activityLoaderFunction={ this.setActivityLoaderStatus.bind(this) }
           ref="photoList"
@@ -226,10 +250,10 @@ class FirstProject extends React.Component {
 var styles = StyleSheet.create({
 
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     height: 60,
     backgroundColor: "#333333",
-    alignItems: "center",
-    paddingTop: 25
   },
   fullscreen: {
     flex: 1,

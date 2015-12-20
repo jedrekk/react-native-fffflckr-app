@@ -10,6 +10,7 @@
     "react-native": "^0.14.1",
     "react-native-device-display": "^1.0.4",
     "react-native-fs": "^1.1.0",
+    "react-native-icons": "^0.7.0",
     "react-native-invertible-scroll-view": "^0.1.2",
     "react-native-open-settings": "0.0.2",
     "react-native-overlay": "^0.3.0",

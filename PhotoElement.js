@@ -44,6 +44,9 @@ export default class PhotoElement extends React.Component {
 
 
 
+  addToFav() {
+
+  }
 
   onPress() {
     console.log(this.props.rowData.owner);
@@ -122,10 +125,6 @@ export default class PhotoElement extends React.Component {
       </TouchableHighlight>
 
     )
-  }
-
-  fullScreen() {
-    this.props.fullscreenFunction(this.props.rowData.url_c);
   }
 
   openURL() {
@@ -231,7 +230,7 @@ export default class PhotoElement extends React.Component {
               </View>
             </TouchableHighlight>
 
-            <TouchableHighlight onPress={ this.fullScreen.bind(this) } >
+            <TouchableHighlight onPress={ this.addToFav.bind(this) } >
               <View style={
                 [
                   styles.navigationLink,
@@ -240,7 +239,7 @@ export default class PhotoElement extends React.Component {
                     backgroundColor: 'rgba(143,142,10,1)',
                    }
                 ]
-              }><Text style={ styles.navigationLinkText } >Fullscreen</Text>
+              }><Text style={ styles.navigationLinkText } >Add to Favorites</Text>
               </View>
             </TouchableHighlight>
         </View>
