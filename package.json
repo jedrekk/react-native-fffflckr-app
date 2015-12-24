@@ -9,9 +9,11 @@
     "flickrapi": "^0.3.36",
     "react-native": "^0.14.1",
     "react-native-device-display": "^1.0.4",
+    "react-native-drawer-layout": "^0.2.1",
     "react-native-fs": "^1.1.0",
     "react-native-icons": "^0.7.0",
     "react-native-open-settings": "0.0.2",
-    "react-native-scrollable-mixin": "^1.0.1"
+    "react-native-scrollable-mixin": "^1.0.1",
+    "react-native-sqlite-storage": "^2.1.1"
   }
 }

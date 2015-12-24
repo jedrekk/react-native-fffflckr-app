@@ -1,8 +1,6 @@
 'use strict';
 
-var React = require('react-native');
-
-var {
+import React, {
   Modal,
   Dimensions,
   AppRegistry,
@@ -12,12 +10,11 @@ var {
   View,
   ActivityIndicatorIOS,
   Image
-} = React;
+} from 'react-native';
 
-// var ResponsiveImage = require('./node_modules/react-native-responsive-image');
-var PhotoElement = require('./PhotoElement')
+import PhotoElement  from './PhotoElement';
 
-var config = require('./Config')
+import config from './Config';
 
 var _ = require('lodash');
 
