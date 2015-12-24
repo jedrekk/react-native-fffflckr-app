@@ -14,8 +14,6 @@ import React, {
 
 import PhotoElement  from './PhotoElement';
 
-import config from './Config';
-
 var _ = require('lodash');
 
 
@@ -68,7 +66,7 @@ export default class PhotoList extends React.Component {
         this.setState({ loadingData: true });
 
         this.props.activityLoaderFunction(LOADING_PHOTOS_FROM_FLICKR);
-        var url = "https://api.flickr.com/services/rest/?method=flickr.favorites.getList&api_key=" + config.API_KEY + "&user_id=" + user_id.split('@').join('%40') + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
+        var url = "https://api.flickr.com/services/rest/?method=flickr.favorites.getList&api_key=" + this.props.apiKey + "&user_id=" + user_id.split('@').join('%40') + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
 
         console.log(user_id);
 

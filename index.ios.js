@@ -20,9 +20,10 @@ import React, {
 } from 'react-native';
 
 import { Icon, } from "react-native-icons";
+import config from './Config';
 
 
-import PhotoList from './PhotoList';
+import PhotoList from './views/PhotoList';
 
 const LOADING_PHOTOS_FROM_FLICKR = 1;
 const ERROR_NOTHING_LOADED = 2;
@@ -233,6 +234,7 @@ class FirstProject extends React.Component {
         <PhotoList
           style={{
             flex: 1 }}
+          apiKey={ config.API_KEY }
           fullscreenFunction = { this.setFullscreenImageVisible.bind(this) }
           activityLoaderFunction={ this.setActivityLoaderStatus.bind(this) }
           ref="photoList"
