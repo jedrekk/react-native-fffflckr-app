@@ -77,6 +77,12 @@ class FirstProject extends React.Component {
     this.setState({ activityLoaderStatus: 0 });
   }
 
+  initializeSearch(searchText) {
+    this.setState({ optionTrayVisible: false })
+
+    this.setState({ searchText: searchText });
+  }
+
   toggleOptionTray() {
     var optionTrayVisible = !this.state.optionTrayVisible;
     this.setState({ optionTrayVisible: optionTrayVisible });
@@ -95,10 +101,6 @@ class FirstProject extends React.Component {
 
   render() {
     return (
-
-
-
-
       <View style={ styles.fullscreen }>
         <Modal transparent={ true } visible={ this.state.activityLoaderStatus == LOADING_PHOTOS_FROM_FLICKR }>
           <View style={{
@@ -261,7 +263,7 @@ class FirstProject extends React.Component {
         </View>
         <OptionTray
           visible={ this.state.optionTrayVisible }
-          searchText={ this.state.searchText }
+          searchFunction={ this.initializeSearch.bind(this) }
           />
         <PhotoList
           style={{

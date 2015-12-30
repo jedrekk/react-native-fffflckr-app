@@ -40,16 +40,35 @@ export default class PhotoList extends React.Component {
         firstUser: true,
         flickrData: [],
         showProgress: false,
-        dataSource: ds.cloneWithRows([])
+        dataSource: ds.cloneWithRows([]),
+        searchText: ''
       }    
     }
 
     componentDidMount() {
-        this.fetchFeed(this.getInitialUser());
+        this.loadMoreFromUser(this.getInitialUser());
     }
 
     componentDidUpdate(prevProps, prevState) {
       
+    }
+
+    componentWillReceiveProps(newProps) {
+      console.log(newProps.searchText);
+      if (newProps.searchText != this.props.searchText) {
+        console.log(newProps.searchText);
+        this.setState({ searchText: newProps.searchText });
+        this.setState({ showProgress: true, firstUser: true })
+        this.setState({ flickrData: [] })
+      }
+    }
+
+    shouldComponentUpdate(newProps, nextState) {
+      if (newProps.searchText != this.props.searchText) {
+        this.loadTag(newProps.searchText);
+        return false;
+      }
+      return true;
     }
 
     getInitialUser() {
@@ -57,28 +76,22 @@ export default class PhotoList extends React.Component {
       return initial_user[_.random(initial_user.length - 1)];
     }
 
-    loadMoreFromUser(user_id) {
-      this.fetchFeed(user_id);
+    loadTag(keyword) {
+      url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&media=photos&tag_mode=all&tags=" + keyword + "&api_key=" + this.props.apiKey + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
+      this.fetchFeed(url);
+
     }
 
-    fetchFeed(user_id, keyword) {
+    loadMoreFromUser(user_id) {
+      url = "https://api.flickr.com/services/rest/?method=flickr.favorites.getList&api_key=" + this.props.apiKey + "&user_id=" + user_id.split('@').join('%40') + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
+      this.fetchFeed(url);
+    }
+
+    fetchFeed(url) {
 
         this.setState({ loadingData: true });
 
         this.props.activityLoaderFunction(LOADING_PHOTOS_FROM_FLICKR);
-
-        var url;
-
-        if (keyword && keyword != '') {
-          url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&media=photos&tag_mode=all&tags=" + keyword + "&api_key=" + this.props.apiKey + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
-
-        } else {
-          url = "https://api.flickr.com/services/rest/?method=flickr.favorites.getList&api_key=" + this.props.apiKey + "&user_id=" + user_id.split('@').join('%40') + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
-        }
-
-        
-
-        console.log(user_id);
 
         fetch(url, {
         })

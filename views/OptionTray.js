@@ -29,7 +29,10 @@ export default class OptionTray extends React.Component {
   }
 
   initializeSearch() {
+
     console.log(this.state.searchText)
+    this.props.searchFunction(this.state.searchText);
+
   }
 
   showMyFavs() {
@@ -71,6 +74,8 @@ export default class OptionTray extends React.Component {
           value={ this.state.searchText }
           />
           <TouchableHighlight
+            onPress={ this.initializeSearch.bind(this) }
+
             underlayColor="#222"
             style={{
               marginRight: 10,
