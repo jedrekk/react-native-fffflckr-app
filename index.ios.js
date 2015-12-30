@@ -24,6 +24,7 @@ import config from './Config';
 
 
 import PhotoList from './views/PhotoList';
+import OptionTray from './views/OptionTray';
 
 const LOADING_PHOTOS_FROM_FLICKR = 1;
 const ERROR_NOTHING_LOADED = 2;
@@ -41,11 +42,17 @@ class FirstProject extends React.Component {
     this.state = {
       activityLoaderStatus: 0,
       popupHideTimeout: 0,
+      optionTrayVisible: false,
+      searchText: ''
     }
   }
 
   componentWillMount() {
     // StatusBarIOS.setHidden(false);
+  }
+  componentDidMount() {
+    this.setState({ optionTrayVisible: true })
+
   }
 
   setActivityLoaderStatus(statusCode) {
@@ -53,6 +60,10 @@ class FirstProject extends React.Component {
 
   }
 
+  showFavorites() {
+    // console.log(this.refs.photoList)
+    this.refs.photoList.scrollToTop();
+  }
   touchHeader() {
     // console.log(this.refs.photoList)
     this.refs.photoList.scrollToTop();
@@ -64,6 +75,11 @@ class FirstProject extends React.Component {
 
   hideModal() {
     this.setState({ activityLoaderStatus: 0 });
+  }
+
+  toggleOptionTray() {
+    var optionTrayVisible = !this.state.optionTrayVisible;
+    this.setState({ optionTrayVisible: optionTrayVisible });
   }
 
   closeFullScreen() {
@@ -183,54 +199,70 @@ class FirstProject extends React.Component {
         </Modal>
 
 
-          <View style={ styles.header }>
-            <TouchableWithoutFeedback
-                style={{
+        <View style={ styles.header }>
+          <TouchableHighlight
+            onPress={ this.showFavorites.bind(this) }
 
-                  width: 32,
-                  height: 40
-                }}>
-              <View
-                style={{
-                  marginLeft: 15,
-                  width: 32,
-                  height: 40
-                }}
-                />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
+            underlayColor="#333"
+            style={{
+              width: 32,
+              height: 40
+            }}>
+            <Icon
+              name='ion|ios-heart'
+              size={ 28 }
+              color='white'
+              style={{
+                marginLeft: 10,
+                width: 32,
+                height: 40
+              }}
+              />
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={ this.touchHeader.bind(this) }
+
+            underlayColor="#333"
+            style={{
+              width: 80,
+              height: 40,
+              alignSelf: 'center',
+             }}
+              >
+            <Image
+              source={ require('./img/logo.png') }
               style={{
                 width: 80,
                 height: 40,
                 alignSelf: 'center',
                }}
-               onPress={ this.touchHeader.bind(this) } >
-              <Image
-                source={ require('./img/logo.png') }
-                style={{
-                  width: 80,
-                  height: 40,
-                  alignSelf: 'center',
-                 }}
-                />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-                style={{
-                  width: 32,
-                  height: 40
-                }}>
-              <Icon
-                name='ion|navicon-round'
-                size={ 28 }
-                color='white'
-                style={{
-                  marginRight: 15,
-                  width: 32,
-                  height: 40
-                }}
-                />
-            </TouchableWithoutFeedback>
-          </View>
+              />
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={ this.toggleOptionTray.bind(this) }
+            underlayColor="#333"
+
+            style={{
+              marginRight: 10,
+              width: 32,
+              height: 40
+            }}>
+            <Icon
+              name='ion|navicon-round'
+              size={ 28 }
+              color='white'
+              style={{
+                marginRight: 15,
+                width: 32,
+                height: 40
+              }}
+              />
+          </TouchableHighlight>
+        </View>
+        <OptionTray
+          visible={ this.state.optionTrayVisible }
+          searchText={ this.state.searchText }
+          />
         <PhotoList
           style={{
             flex: 1 }}
@@ -238,7 +270,10 @@ class FirstProject extends React.Component {
           fullscreenFunction = { this.setFullscreenImageVisible.bind(this) }
           activityLoaderFunction={ this.setActivityLoaderStatus.bind(this) }
           ref="photoList"
-        />
+
+          searchText={ this.state.searchText }
+
+          />
       </View>
         
     );
