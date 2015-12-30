@@ -62,7 +62,7 @@ class FirstProject extends React.Component {
 
   showFavorites() {
     // console.log(this.refs.photoList)
-    this.refs.photoList.scrollToTop();
+    this.refs.photoList.restartAnew();
   }
   touchHeader() {
     // console.log(this.refs.photoList)

@@ -71,6 +71,13 @@ export default class PhotoList extends React.Component {
       return true;
     }
 
+    restartAnew() {
+        this.setState({ showProgress: true, firstUser: true })
+        this.setState({ flickrData: [] })
+        this.loadMoreFromUser(this.getInitialUser());
+
+    }
+
     getInitialUser() {
       var initial_user = ["14280625%40N03", "26540085%40N08", "32662406%40N03", "33783444%40N05", "38177870%40N00", "42128445%40N00", "48848351%40N00", "53519312%40N08", "54167581%40N00", "59254826%40N00", "59697550%40N00", "60529400%40N06", "60898119%40N00", "7710444%40N03", "9511843%40N02"];
       return initial_user[_.random(initial_user.length - 1)];
