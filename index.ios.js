@@ -51,7 +51,7 @@ class FirstProject extends React.Component {
     // StatusBarIOS.setHidden(false);
   }
   componentDidMount() {
-    this.setState({ optionTrayVisible: true })
+    this.setState({ optionTrayVisible: false })
 
   }
 
@@ -79,8 +79,8 @@ class FirstProject extends React.Component {
 
   initializeSearch(searchText) {
     this.setState({ optionTrayVisible: false })
-
-    this.setState({ searchText: searchText });
+    // this.setState({ searchText: searchText });
+    this.refs.photoList.loadTag(searchText);
   }
 
   toggleOptionTray() {

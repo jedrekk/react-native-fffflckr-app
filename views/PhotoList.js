@@ -53,23 +53,23 @@ export default class PhotoList extends React.Component {
       
     }
 
-    componentWillReceiveProps(newProps) {
-      console.log(newProps.searchText);
-      if (newProps.searchText != this.props.searchText) {
-        console.log(newProps.searchText);
-        this.setState({ searchText: newProps.searchText });
-        this.setState({ showProgress: true, firstUser: true })
-        this.setState({ flickrData: [] })
-      }
-    }
+    // componentWillReceiveProps(newProps) {
+    //   console.log(newProps.searchText);
+    //   if (newProps.searchText != this.props.searchText) {
+    //     console.log(newProps.searchText);
+    //     this.setState({ searchText: newProps.searchText });
+    //     this.setState({ showProgress: true, firstUser: true })
+    //     this.setState({ flickrData: [] })
+    //   }
+    // }
 
-    shouldComponentUpdate(newProps, nextState) {
-      if (newProps.searchText != this.props.searchText) {
-        this.loadTag(newProps.searchText);
-        return false;
-      }
-      return true;
-    }
+    // shouldComponentUpdate(newProps, nextState) {
+    //   if (newProps.searchText != this.props.searchText) {
+    //     this.loadTag(newProps.searchText);
+    //     return false;
+    //   }
+    //   return true;
+    // }
 
     restartAnew() {
         this.setState({ showProgress: true, firstUser: true })
@@ -84,6 +84,8 @@ export default class PhotoList extends React.Component {
     }
 
     loadTag(keyword) {
+      this.setState({ showProgress: true, firstUser: true })
+      this.setState({ flickrData: [] })
       url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&media=photos&tag_mode=all&tags=" + keyword + "&api_key=" + this.props.apiKey + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
       this.fetchFeed(url);
 

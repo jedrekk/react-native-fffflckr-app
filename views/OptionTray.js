@@ -25,18 +25,45 @@ export default class OptionTray extends React.Component {
 
     this.state = {
       searchText: props.searchText,
+      reloadIconVisible: false,
+      lastSearchedText: '',
     }    
   }
 
   initializeSearch() {
 
-    console.log(this.state.searchText)
+    this.setState({ reloadIconVisible: true, lastSearchedText: this.state.searchText.toLowerCase() })
     this.props.searchFunction(this.state.searchText);
 
   }
 
   showMyFavs() {
 
+  }
+
+  getSearchIcon() {
+    if (this.state.reloadIconVisible) {
+      return (
+        <Icon
+          name='ion|loop'
+          size={ 28 }
+          color='white'
+          style={{
+            width: 40,
+            height: 45
+          }}
+          />)
+    }
+
+    return (<Icon
+        name='ion|search'
+        size={ 28 }
+        color='white'
+        style={{
+          width: 40,
+          height: 45
+        }}
+        />)
   }
 
   render() {
@@ -66,11 +93,22 @@ export default class OptionTray extends React.Component {
             paddingLeft: 20,
             marginLeft: 15,
             }}
+          autoCapitalize='none'
           enablesReturnKeyAutomatically={ true }
           returnKeyType='search'
           placeholder='Start over with a search'
           onSubmitEditing={ this.initializeSearch.bind(this) }
-          onChangeText={(searchText) => this.setState( {searchText} )}
+          onChangeText={(searchText) => { 
+            this.setState( {searchText} );
+
+            if (searchText.toLowerCase() == this.state.lastSearchedText.toLowerCase()) {
+              this.setState({ reloadIconVisible: true })
+            } else {
+              this.setState({ reloadIconVisible: false })
+
+            }
+            }
+          }
           value={ this.state.searchText }
           />
           <TouchableHighlight
@@ -84,15 +122,7 @@ export default class OptionTray extends React.Component {
               height: 45,
             }}
             >
-            <Icon
-              name='ion|search'
-              size={ 28 }
-              color='white'
-              style={{
-                width: 40,
-                height: 45
-              }}
-              />
+            { this.getSearchIcon() }
           </TouchableHighlight>
         </View>
         <View
