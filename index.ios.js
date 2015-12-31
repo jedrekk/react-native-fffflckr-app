@@ -98,6 +98,38 @@ class FirstProject extends React.Component {
     this.setState({ fullscreenImageURL: url, fullscreenImageVisible: true })
   }
 
+  makeOverlayRevealIcon() {
+
+    if (this.state.optionTrayVisible) {
+    return (
+      <Icon
+        name='ion|arrow-down-b'
+        size={ 28 }
+        color='white'
+        style={{
+          marginRight: 15,
+          width: 32,
+          height: 40
+        }}
+      />
+    )
+    }
+
+    return (
+      <Icon
+        name='ion|search'
+        size={ 28 }
+        color='white'
+        style={{
+          marginRight: 15,
+          width: 32,
+          height: 40
+        }}
+      />
+    )
+
+  }
+
 
   render() {
     return (
@@ -201,6 +233,23 @@ class FirstProject extends React.Component {
         </Modal>
 
 
+
+
+        <PhotoList
+          style={{
+            flex: 1 }}
+          apiKey={ config.API_KEY }
+          fullscreenFunction = { this.setFullscreenImageVisible.bind(this) }
+          activityLoaderFunction={ this.setActivityLoaderStatus.bind(this) }
+          ref="photoList"
+
+          searchText={ this.state.searchText }
+
+        />
+        <OptionTray
+          visible={ this.state.optionTrayVisible }
+          searchFunction={ this.initializeSearch.bind(this) }
+        />
         <View style={ styles.header }>
           <TouchableHighlight
             onPress={ this.showFavorites.bind(this) }
@@ -249,33 +298,10 @@ class FirstProject extends React.Component {
               width: 32,
               height: 40
             }}>
-            <Icon
-              name='ion|navicon-round'
-              size={ 28 }
-              color='white'
-              style={{
-                marginRight: 15,
-                width: 32,
-                height: 40
-              }}
-              />
+
+            { this.makeOverlayRevealIcon() }
           </TouchableHighlight>
-        </View>
-        <OptionTray
-          visible={ this.state.optionTrayVisible }
-          searchFunction={ this.initializeSearch.bind(this) }
-          />
-        <PhotoList
-          style={{
-            flex: 1 }}
-          apiKey={ config.API_KEY }
-          fullscreenFunction = { this.setFullscreenImageVisible.bind(this) }
-          activityLoaderFunction={ this.setActivityLoaderStatus.bind(this) }
-          ref="photoList"
-
-          searchText={ this.state.searchText }
-
-          />
+        </View>          
       </View>
         
     );
@@ -286,10 +312,9 @@ class FirstProject extends React.Component {
 var styles = StyleSheet.create({
 
   header: {
-    borderTopWidth: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 60,
+    height: 40,
     backgroundColor: "#333333",
   },
   fullscreen: {
