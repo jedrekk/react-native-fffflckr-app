@@ -87,7 +87,7 @@ export default class PhotoList extends React.Component {
       this.setState({ showProgress: true, firstUser: true })
       this.setState({ flickrData: [] })
       url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&media=photos&tag_mode=all&tags=" + keyword + "&api_key=" + this.props.apiKey + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
-      this.fetchFeed(url);
+      this.fetchFeed(url, 20);
 
     }
 
@@ -96,7 +96,7 @@ export default class PhotoList extends React.Component {
       this.fetchFeed(url);
     }
 
-    fetchFeed(url) {
+    fetchFeed(url, photoCount) {
 
         this.setState({ loadingData: true });
 
@@ -117,6 +117,8 @@ export default class PhotoList extends React.Component {
 
           this.props.activityLoaderFunction(0);
 
+          photoCount = photoCount || 10;
+
           if (!this.state.firstUser) {
             this.scrollToBottom();
           } else {
@@ -125,7 +127,9 @@ export default class PhotoList extends React.Component {
 
           console.log(responseData);
 
-          feedItems = _.slice(_.shuffle(feedItems), 0, 10);
+
+
+          feedItems = _.slice(_.shuffle(feedItems), 0, photoCount);
           // feedItems = _.slice(_.shuffle(feedItems), 0, 1);
 
           var tempItems = this.state.flickrData.concat(feedItems);

@@ -9,6 +9,7 @@ import React, {
   AlertIOS,
   AppRegistry,
   StyleSheet,
+  ActionSheetIOS,
   Text,
   Image,
   View,
@@ -65,6 +66,30 @@ export default class PhotoElement extends React.Component {
       }
     });
   }
+
+  shareImage() {
+    ActionSheetIOS.showShareActionSheetWithOptions({
+      url: "https://flickr.com/" + this.props.rowData.owner + "/" + this.props.rowData.id,
+      excludedActivityTypes: [
+        'com.apple.UIKit.activity.PostToTwitter'
+      ]
+    },
+    (error) => {
+      console.error(error);
+    },
+    (success, method) => {
+      var text;
+      if (success) {
+        text = `Shared via ${method}`;
+      } else {
+        text = 'You didn\'t share';
+      }
+      this.setState({text});
+    });
+  }
+
+
+
 
   saveImage() {
 
@@ -155,14 +180,18 @@ export default class PhotoElement extends React.Component {
 
 
 
+
+
     return (
       <ScrollView
         showsHorizontalScrollIndicator={ false }
         horizontal={ true }
+        scrollsToTop={ false }
         pagingEnabled={ true }
         style={{
           flex: 1,
-          height: Math.floor((Dimensions.get("window").width / rowData.width_c) * rowData.height_c)
+          height: Math.floor((Dimensions.get("window").width / rowData.width_c) * rowData.height_c),
+          // width: (Dimensions.get("window").width * 1.5),
 
         }}>
         
@@ -196,7 +225,7 @@ export default class PhotoElement extends React.Component {
             justifyContent: 'center',
             flex: 1,
             backgroundColor: "#555",
-            width: (Dimensions.get("window").width / 2),
+            width: (Dimensions.get("window").width / 1.3),
             height: Math.floor((Dimensions.get("window").width / rowData.width_c) * rowData.height_c)
           }}
           >
@@ -216,19 +245,59 @@ export default class PhotoElement extends React.Component {
               } ><Text style={ styles.navigationLinkText } >{ flickrButtonCopy }</Text>
               </View>
             </TouchableHighlight>
+            <View
+              style={
+                  [
+                    styles.navigationLink,
+                    {
+                      flexDirection: 'row',
+                      height: buttonHeight,
+                      backgroundColor: 'rgba(246,199,10,1)',
+                     }
+                  ]
+                } >
+              <TouchableHighlight onPress={ this.saveImage.bind(this) }>
+                <View style={
+                  [
+                    styles.navigationLink,
+                    {
+                      height: buttonHeight,
+                      backgroundColor: 'rgba(12,199,110,1)',
+                      width: (Dimensions.get("window").width / 1.3) / 2,
+                     }
+                  ]
+                } ><Text style={
+                  [
+                    styles.navigationLinkText,
+                    {
+                      width: (Dimensions.get("window").width / 1.3) / 3,
+                    }
+                  ]
+                } >Save</Text>
+                </View>
+              </TouchableHighlight>
+              <TouchableHighlight onPress={ this.shareImage.bind(this) }>
+                <View style={
+                  [
+                    styles.navigationLink,
+                    {
+                      height: buttonHeight,
+                      backgroundColor: 'rgba(109,202,213,1)',
+                      width: (Dimensions.get("window").width / 1.3) / 2,
+                     }
+                  ]
+                } ><Text style={
+                  [
+                    styles.navigationLinkText,
+                    {
+                      width: (Dimensions.get("window").width / 1.3) / 3,
+                    }
+                  ]
+                } >Share Link</Text>
+                </View>
+              </TouchableHighlight>
 
-            <TouchableHighlight onPress={ this.saveImage.bind(this) }>
-              <View style={
-                [
-                  styles.navigationLink,
-                  {
-                    height: buttonHeight,
-                    backgroundColor: 'rgba(12,199,130,1)',
-                   }
-                ]
-              } ><Text style={ styles.navigationLinkText } >Save Pic</Text>
-              </View>
-            </TouchableHighlight>
+            </View>
 
             <TouchableHighlight onPress={ this.addToFav.bind(this) } >
               <View style={
@@ -266,7 +335,7 @@ var styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignSelf: 'center',
-    width: (Dimensions.get("window").width / 2),
+    width: (Dimensions.get("window").width / 1.3),
     // padding: 10,
     // margin: 10
 

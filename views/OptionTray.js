@@ -24,7 +24,7 @@ export default class OptionTray extends React.Component {
     super(props);
 
     this.state = {
-      searchText: props.searchText,
+      searchText: '',
       reloadIconVisible: false,
       lastSearchedText: '',
     }    
