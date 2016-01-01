@@ -46,7 +46,7 @@ export default class PhotoElement extends React.Component {
 
 
   addToFav() {
-
+    this.props.addToFavoritesFunction(this.props.rowData);
   }
 
   onPress() {

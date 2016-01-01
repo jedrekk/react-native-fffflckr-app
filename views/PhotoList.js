@@ -96,6 +96,15 @@ export default class PhotoList extends React.Component {
       this.fetchFeed(url);
     }
 
+    addToFavorites(rowData) {
+      this.props.addToFavoritesFunction(rowData);
+    }
+
+    showFavorites(rawRowData) {
+      console.log(rawRowData);
+      this.setState({ footerHidden: false, loadingData: false, flickrData: rawRowData, showProgress: false, dataSource: this.state.dataSource.cloneWithRows(rawRowData) })
+    }
+
     fetchFeed(url, photoCount) {
 
         this.setState({ loadingData: true });
@@ -214,11 +223,13 @@ export default class PhotoList extends React.Component {
     renderRow(rowData) {
 
       var boundFunction = this.loadMoreFromUser.bind(this);
+      var addToFavoritesFunction = this.addToFavorites.bind(this);
 
       return <PhotoElement
         fullscreenFunction={ this.props.fullscreenFunction.bind(this) }
         activityLoaderFunction={ this.props.activityLoaderFunction.bind(this) }
         loadMoreFunction={ boundFunction }
+        addToFavoritesFunction={ addToFavoritesFunction }
         rowData={ rowData } />
     }
 
