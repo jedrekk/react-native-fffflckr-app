@@ -254,6 +254,66 @@ class FirstProject extends React.Component {
 
             underlayColor="#333"
             style={{
+              alignSelf: 'center',
+              width: 32,
+              height: 40
+            }}>
+            <Icon
+              name='ion|gear-a'
+              size={ 28 }
+              color='white'
+              style={{
+                alignSelf: 'center',
+                width: 32,
+                height: 40
+              }}
+              />
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            onPress={ this.showFavorites.bind(this) }
+
+            underlayColor="#333"
+            style={{
+              alignSelf: 'center',
+              width: 32,
+              height: 40
+            }}>
+            <Icon
+              name='ion|loop'
+              size={ 28 }
+              color='white'
+              style={{
+                width: 32,
+                height: 40
+              }}
+              />
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={ this.touchHeader.bind(this) }
+
+            underlayColor="#333"
+            style={{
+              alignSelf: 'center',
+              width: 80,
+              height: 40,
+              alignSelf: 'center',
+             }}
+              >
+            <Image
+              source={ require('./img/logo.png') }
+              style={{
+                width: 80,
+                height: 40,
+               }}
+              />
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={ this.showFavorites.bind(this) }
+
+            underlayColor="#333"
+            style={{
+              alignSelf: 'center',
               width: 32,
               height: 40
             }}>
@@ -268,70 +328,16 @@ class FirstProject extends React.Component {
               />
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={ this.showFavorites.bind(this) }
-
-            underlayColor="#333"
-            style={{
-              width: 32,
-              height: 40
-            }}>
-            <Icon
-              name='ion|ios-loop'
-              size={ 28 }
-              color='white'
-              style={{
-                width: 32,
-                height: 40
-              }}
-              />
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={ this.touchHeader.bind(this) }
-
-            underlayColor="#333"
-            style={{
-              width: 80,
-              height: 40,
-              alignSelf: 'center',
-             }}
-              >
-            <Image
-              source={ require('./img/logo.png') }
-              style={{
-                width: 80,
-                height: 40,
-                alignSelf: 'center',
-               }}
-              />
-          </TouchableHighlight>
-          <TouchableHighlight
             onPress={ this.toggleOptionTray.bind(this) }
             underlayColor="#333"
 
             style={{
+              alignSelf: 'center',
               width: 32,
               height: 40
             }}>
 
             { this.makeOverlayRevealIcon() }
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={ this.showFavorites.bind(this) }
-
-            underlayColor="#333"
-            style={{
-              width: 32,
-              height: 40
-            }}>
-            <Icon
-              name='ion|gear-a'
-              size={ 28 }
-              color='white'
-              style={{
-                width: 32,
-                height: 40
-              }}
-              />
           </TouchableHighlight>
         </View>          
       </View>
@@ -346,7 +352,7 @@ var styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    height: 40,
+    height: 48,
     backgroundColor: "#333333",
   },
   fullscreen: {

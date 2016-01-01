@@ -54,6 +54,11 @@ export default class PhotoElement extends React.Component {
     this.props.loadMoreFunction(this.props.rowData.owner);
   }
 
+  componentDidMount() {
+    // this.refs.photoView.scrollWithoutAnimationTo(0,Dimensions.get("window").width);
+
+  }
+
   componentWillMount() {
 
     var url = "flickr://photos/jedrek/4233504430"
@@ -188,6 +193,7 @@ export default class PhotoElement extends React.Component {
         horizontal={ true }
         scrollsToTop={ false }
         pagingEnabled={ true }
+        ref="photoView"
         style={{
           flex: 1,
           height: Math.floor((Dimensions.get("window").width / rowData.width_c) * rowData.height_c),
@@ -195,6 +201,8 @@ export default class PhotoElement extends React.Component {
 
         }}>
         
+
+
         <TouchableHighlight onPress={ boundPress } >
           <View style={{
           flexDirection: 'row',

@@ -246,6 +246,8 @@ export default class PhotoList extends React.Component {
             style={{
               flex: 1,
             }}
+            showsHorizontalScrollIndicator={ false }
+            showsVerticalScrollIndicator={ false }
             removeClippedSubview={ true }
             dataSource={ this.state.dataSource }
             renderRow={ this.renderRow.bind(this) }
