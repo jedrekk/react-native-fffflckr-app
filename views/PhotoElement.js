@@ -38,7 +38,8 @@ export default class PhotoElement extends React.Component {
       loading: false,
       file_uri: RNFS.CachesDirectoryPath + "/fffflckr.jpg",
       buttonCount: 3,
-      flickrAppInstalled: false
+      flickrAppInstalled: false,
+      favorite: false,
 
     }
   }
@@ -46,7 +47,10 @@ export default class PhotoElement extends React.Component {
 
 
   addToFav() {
-    this.props.addToFavoritesFunction(this.props.rowData);
+    if (!this.state.favorite) {
+      this.setState({ favorite: true });
+      this.props.addToFavoritesFunction(this.props.rowData);
+    }
   }
 
   onPress() {
@@ -137,6 +141,29 @@ export default class PhotoElement extends React.Component {
 
 
   }
+
+  makeFavoriteButton(buttonHeight) {
+
+    var favoritesText = 'Add to favorites';
+
+    if (this.state.favorite) {
+      favoritesText = 'Marked as favorite';
+    }
+
+    return(
+      <TouchableHighlight onPress={ this.addToFav.bind(this) } >
+        <View style={
+          [
+            styles.navigationLink,
+            {
+              height: buttonHeight,
+              backgroundColor: 'rgba(143,142,10,1)',
+             }
+          ]
+        }><Text style={ styles.navigationLinkText } >{ favoritesText }</Text>
+        </View>
+      </TouchableHighlight>);
+    }
 
 
   makeFlickrFavoriteButton(rowData, buttonHeight) {
@@ -306,19 +333,7 @@ export default class PhotoElement extends React.Component {
               </TouchableHighlight>
 
             </View>
-
-            <TouchableHighlight onPress={ this.addToFav.bind(this) } >
-              <View style={
-                [
-                  styles.navigationLink,
-                  {
-                    height: buttonHeight,
-                    backgroundColor: 'rgba(143,142,10,1)',
-                   }
-                ]
-              }><Text style={ styles.navigationLinkText } >Add to Favorites</Text>
-              </View>
-            </TouchableHighlight>
+            { this.makeFavoriteButton(buttonHeight) }
         </View>
       </ScrollView>);
   }
