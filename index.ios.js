@@ -1,6 +1,6 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * ffff*lckr react native app
+ * https://github.com/jedrekk/react-native-fffflckr-app
  */
 'use strict';
 
@@ -107,7 +107,6 @@ class FirstProject extends React.Component {
         size={ 28 }
         color='white'
         style={{
-          marginRight: 15,
           width: 32,
           height: 40
         }}
@@ -121,7 +120,6 @@ class FirstProject extends React.Component {
         size={ 28 }
         color='white'
         style={{
-          marginRight: 15,
           width: 32,
           height: 40
         }}
@@ -264,7 +262,24 @@ class FirstProject extends React.Component {
               size={ 28 }
               color='white'
               style={{
-                marginLeft: 10,
+                width: 32,
+                height: 40
+              }}
+              />
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={ this.showFavorites.bind(this) }
+
+            underlayColor="#333"
+            style={{
+              width: 32,
+              height: 40
+            }}>
+            <Icon
+              name='ion|ios-loop'
+              size={ 28 }
+              color='white'
+              style={{
                 width: 32,
                 height: 40
               }}
@@ -294,12 +309,29 @@ class FirstProject extends React.Component {
             underlayColor="#333"
 
             style={{
-              marginRight: 10,
               width: 32,
               height: 40
             }}>
 
             { this.makeOverlayRevealIcon() }
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={ this.showFavorites.bind(this) }
+
+            underlayColor="#333"
+            style={{
+              width: 32,
+              height: 40
+            }}>
+            <Icon
+              name='ion|gear-a'
+              size={ 28 }
+              color='white'
+              style={{
+                width: 32,
+                height: 40
+              }}
+              />
           </TouchableHighlight>
         </View>          
       </View>
@@ -313,7 +345,7 @@ var styles = StyleSheet.create({
 
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     height: 40,
     backgroundColor: "#333333",
   },
