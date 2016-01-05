@@ -38,24 +38,35 @@ export default class PhotoElement extends React.Component {
       loading: false,
       file_uri: RNFS.CachesDirectoryPath + "/fffflckr.jpg",
       buttonCount: 3,
-      flickrAppInstalled: false,
       favorite: false,
+      offsetX: 0
 
     }
   }
 
+  // setNativeProps (nativeProps) {
+  //   this._root.setNativeProps(nativeProps);
+  // }
 
 
   addToFav() {
     if (!this.state.favorite) {
       this.setState({ favorite: true });
       this.props.addToFavoritesFunction(this.props.rowData);
+    } else {
+      this.setState({ favorite: false });
+      this.props.removeFromFavoritesFunction(this.props.rowData);
     }
   }
 
   onPress() {
-    console.log(this.props.rowData.owner);
-    this.props.loadMoreFunction(this.props.rowData.owner);
+
+    if (this.state.offsetX < 20) { // Is photo the main thing being displayed? Load more pics
+      this.props.loadMoreFunction(this.props.rowData.owner);
+    } else {
+      this.scrollToTop();
+    }
+
   }
 
   componentDidMount() {
@@ -65,18 +76,12 @@ export default class PhotoElement extends React.Component {
 
   componentWillMount() {
 
-    var url = "flickr://photos/jedrek/4233504430"
 
-    LinkingIOS.canOpenURL(url, (supported) => {
-      if (supported) {
-        this.setState({ flickrAppInstalled: true });
-      } else {
-
-      }
-    });
   }
 
   shareImage() {
+
+
     ActionSheetIOS.showShareActionSheetWithOptions({
       url: "https://flickr.com/" + this.props.rowData.owner + "/" + this.props.rowData.id,
       excludedActivityTypes: [
@@ -147,7 +152,7 @@ export default class PhotoElement extends React.Component {
     var favoritesText = 'Add to favorites';
 
     if (this.state.favorite) {
-      favoritesText = 'Marked as favorite';
+      favoritesText = 'Remove from favorites';
     }
 
     return(
@@ -184,17 +189,29 @@ export default class PhotoElement extends React.Component {
     )
   }
 
+
+  scrollToTop() {
+    requestAnimationFrame(() => {
+      this.refs.photo.getScrollResponder().scrollTo(0,0);
+    });
+  }
+
+
   openURL() {
 
     var url;
 
-    if (this.state.flickrAppInstalled) {
+    if (this.props.flickrAppInstalled) {
       url = "flickr://photos/" + this.props.rowData.owner + "/" + this.props.rowData.id;
     } else {
       url = "https://flickr.com/" + this.props.rowData.owner + "/" + this.props.rowData.id
     }
 
     LinkingIOS.openURL(url);
+  }
+
+  onScrollEnd() {
+    console.log('onScrollEnd')
   }
 
   render() {
@@ -211,16 +228,22 @@ export default class PhotoElement extends React.Component {
     var flickrButtonCopy = (this.state.flickrAppInstalled) ? "Open in flickr app" : "Open on flickr";
 
 
+    // scrollsToTop is set false, so that our ListView is the only ScrollView on our screen at once.
 
 
 
     return (
       <ScrollView
+        alwaysBounceHorizontal={ false }
+        bounces={ false }
         showsHorizontalScrollIndicator={ false }
         horizontal={ true }
         scrollsToTop={ false }
         pagingEnabled={ true }
-        ref="photoView"
+        scrollEventThrottle={ 16 }
+        onScroll={ (e) => { this.setState({ offsetX: (e.nativeEvent.contentOffset.x) }) }.bind(this) }
+        onScrollAnimationEnd={ (e) => { console.log(e) }}
+        ref="photo"
         style={{
           flex: 1,
           height: Math.floor((Dimensions.get("window").width / rowData.width_c) * rowData.height_c),

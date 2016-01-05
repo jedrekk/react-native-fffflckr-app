@@ -7,6 +7,7 @@ import React, {
   StyleSheet,
   Text,
   ListView,
+  LinkingIOS,
   View,
   ActivityIndicatorIOS,
   Image
@@ -39,42 +40,43 @@ export default class PhotoList extends React.Component {
         footerHidden: true,
         firstUser: true,
         flickrData: [],
-        showProgress: false,
+        showProgress: true,
         dataSource: ds.cloneWithRows([]),
-        searchText: ''
+        flickrAppInstalled: false,
       }    
     }
 
+
     componentDidMount() {
-        this.loadMoreFromUser(this.getInitialUser());
+      var url = "flickr://photos/jedrek/4233504430"
+
+
+      LinkingIOS.canOpenURL(url, (supported) => {
+        if (supported) {
+          this.setState({ flickrAppInstalled: true });
+        } else {
+
+        }
+      });
+
+      this.loadMoreFromUser(this.getInitialUser());
     }
 
     componentDidUpdate(prevProps, prevState) {
-      
+      if (this.refs.listView) {
+
+
+        // console.log(this.refs.listView.contentOffset)
+        // console.log(this.refs.listView.getScrollResponder());
+        // console.log(this.refs.listView.scrollProperties);
+      }
+
     }
 
-    // componentWillReceiveProps(newProps) {
-    //   console.log(newProps.searchText);
-    //   if (newProps.searchText != this.props.searchText) {
-    //     console.log(newProps.searchText);
-    //     this.setState({ searchText: newProps.searchText });
-    //     this.setState({ showProgress: true, firstUser: true })
-    //     this.setState({ flickrData: [] })
-    //   }
-    // }
-
-    // shouldComponentUpdate(newProps, nextState) {
-    //   if (newProps.searchText != this.props.searchText) {
-    //     this.loadTag(newProps.searchText);
-    //     return false;
-    //   }
-    //   return true;
-    // }
-
     restartAnew() {
-        this.setState({ showProgress: true, firstUser: true })
-        this.setState({ flickrData: [] })
-        this.loadMoreFromUser(this.getInitialUser());
+      this.setState({ showProgress: true, firstUser: true })
+      this.setState({ flickrData: [] })
+      this.loadMoreFromUser(this.getInitialUser());
 
     }
 
@@ -92,6 +94,7 @@ export default class PhotoList extends React.Component {
     }
 
     loadMoreFromUser(user_id) {
+      this.props.disableHeartIconFunction();
       url = "https://api.flickr.com/services/rest/?method=flickr.favorites.getList&api_key=" + this.props.apiKey + "&user_id=" + user_id.split('@').join('%40') + "&extras=url_c&per_page=100&format=json&nojsoncallback=1";
       this.fetchFeed(url);
     }
@@ -100,7 +103,12 @@ export default class PhotoList extends React.Component {
       this.props.addToFavoritesFunction(rowData);
     }
 
+    removeFromFavorites(rowData) {
+      this.props.removeFromFavoritesFunction(rowData);
+    }
+
     showFavorites(rawRowData) {
+      this.scrollToTop();
       console.log(rawRowData);
       this.setState({ footerHidden: false, loadingData: false, flickrData: rawRowData, showProgress: false, dataSource: this.state.dataSource.cloneWithRows(rawRowData) })
     }
@@ -109,7 +117,9 @@ export default class PhotoList extends React.Component {
 
         this.setState({ loadingData: true });
 
-        this.props.activityLoaderFunction(LOADING_PHOTOS_FROM_FLICKR);
+        if (!this.state.firstUser) {
+          this.props.activityLoaderFunction(LOADING_PHOTOS_FROM_FLICKR);
+        }
 
         fetch(url, {
         })
@@ -158,6 +168,8 @@ export default class PhotoList extends React.Component {
     }
 
     scrollToTop() {
+
+
       requestAnimationFrame(() => {
         this.refs.listView.getScrollResponder().scrollTo(0,0);
       });
@@ -180,6 +192,19 @@ export default class PhotoList extends React.Component {
       });
 
       
+
+    }
+
+    onChangeVisibleRows(visibleRows, changedRows) {
+      // console.log('onChangeVisibleRows called with', arguments);
+      // console.log(changedRows.s1);
+      var keys = [];
+      for (var key in changedRows.s1) {
+        if (changedRows.s1[key] == false) {
+          console.log(key);
+        }
+      }
+
 
     }
 
@@ -220,32 +245,38 @@ export default class PhotoList extends React.Component {
       )
     }
 
-    renderRow(rowData) {
+    renderRow(rowData, sec, i) {
 
       var boundFunction = this.loadMoreFromUser.bind(this);
       var addToFavoritesFunction = this.addToFavorites.bind(this);
+      var removeFromFavoritesFunction = this.removeFromFavorites.bind(this);
 
       return <PhotoElement
+        flickrAppInstalled= { this.state.flickrAppInstalled }
         fullscreenFunction={ this.props.fullscreenFunction.bind(this) }
         activityLoaderFunction={ this.props.activityLoaderFunction.bind(this) }
         loadMoreFunction={ boundFunction }
+        removeFromFavoritesFunction={ removeFromFavoritesFunction }
         addToFavoritesFunction={ addToFavoritesFunction }
-        rowData={ rowData } />
+        rowData={ rowData }
+        />
     }
 
+//         ref={(row) => this.rows[i] = row}
 
     render() {
 
         console.log();
 
-
         if (this.state.showProgress) {
             return (
                 <View style={{
                     flex: 1,
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    backgroundColor: "#999",
+
                 }}>
-                    <ActivityIndicatorIOS size="large" animating={true} />
+                  <ActivityIndicatorIOS size="large" animating={true} />
                 </View>
             );
         }
@@ -256,7 +287,9 @@ export default class PhotoList extends React.Component {
             ref="listView"
             style={{
               flex: 1,
+              backgroundColor: "#999",
             }}
+            onChangeVisibleRows={ this.onChangeVisibleRows.bind(this) }
             showsHorizontalScrollIndicator={ false }
             showsVerticalScrollIndicator={ false }
             removeClippedSubview={ true }

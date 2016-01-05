@@ -51,15 +51,20 @@ class FirstProject extends React.Component {
 
 
     this.state = {
+      favoritesExist: false,
+      favoritesCurrentlyOpen: false,
+
       progress: [],
+
       activityLoaderStatus: 0,
       popupHideTimeout: 0,
       optionTrayVisible: false,
-      searchText: '',
+
       database_name: "fffflckr.db",
       database_version: "0.1",
       database_displayname: "fffflckr favorites database",
       database_size: 200000,
+      showingFavorites: false,
     }
   }
 
@@ -80,44 +85,50 @@ class FirstProject extends React.Component {
 
 
   initializeDB() {
-      var that = this;
-      that.state.progress.push("Opening database ...");
+    var that = this;
+    that.state.progress.push("Opening database ...");
+    that.setState(that.state);
+    SQLite.openDatabase(this.state.database_name, this.state.database_version, this.state.database_displayname, this.state.database_size).then((DB) => {
+      db = DB;
+      that.state.progress.push("Database OPEN");
       that.setState(that.state);
-      SQLite.openDatabase(this.state.database_name, this.state.database_version, this.state.database_displayname, this.state.database_size).then((DB) => {
-        db = DB;
-        that.state.progress.push("Database OPEN");
-        that.setState(that.state);
-        that.checkDatabase(db);
-        console.log(that.state.progress);
-      }).catch((error) => {
-        console.log(error);
-      });
+      that.checkDatabase(db);
+      console.log(that.state.progress);
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
 
   errorCB(err) {
-      console.log("error: ",err);
-      this.state.progress.push("Error " + (err.message || err));
-      this.setState(this.state);
+    console.log("error: ",err);
+    this.state.progress.push("Error " + (err.message || err));
+    this.setState(this.state);
+  }
+
+  hasFavorite(tx) {
+    var that = this;
+    tx.executeSql('SELECT * FROM favoritePhotos LIMIT 1').then(([tx,results]) =>{
+      console.log(that);
+      console.log(results.rows.length);
+      that.setState({ favoritesExist: (results.rows.length > 0) });
+
+    });
   }
 
   checkDatabase(db){
     var that = this;
     that.state.progress.push("Database integrity check");
     that.setState(that.state);
-    db.executeSql('SELECT 1 FROM favoritePhotos LIMIT 1').then(() =>{
-    //   that.state.progress.push("Database is ready ... executing query ...");
-    //   that.setState(that.state);
-    //   // db.transaction(that.queryEmployees).then(() => {
-    //   //   that.state.progress.push("Processing completed");
-    //   //   that.setState(that.state);
-    //   //   });
+    db.transaction(that.hasFavorite.bind(that)).then(() =>{
+
     }).catch((error) =>{
       console.log("Received error: ", error);
       if (error.code == 5) {
         db.transaction(that.createDatabaseTables).then(() =>{
           that.state.progress.push("Database populated ... executing query ...");
           that.setState(that.state);
+          console.log(that.state.progress)
         }).catch((error) =>{
           console.log(error);
         });
@@ -175,6 +186,10 @@ class FirstProject extends React.Component {
     }
   }
 
+  removeFromFavorites(rowData) {
+
+  }
+
   addToFavorites(rowData) {
     console.log('addToFavorites');
     console.log(rowData);
@@ -186,7 +201,9 @@ class FirstProject extends React.Component {
       + rowData.width_c + ", "
       + rowData.height_c + ")";
 
-    db.executeSql(addToFavoritesQueryString).catch((error) => {  
+    db.executeSql(addToFavoritesQueryString).then(() => {
+      this.setState({ favoritesExist: true });
+    }).catch((error) => {  
       that.errorCB(error) 
     });
 
@@ -198,7 +215,7 @@ class FirstProject extends React.Component {
     
     console.log("Executing query");
 
-    tx.executeSql('SELECT id, flickr_id, owner, url_c, width_c, height_c FROM favoritePhotos').then(([tx,results]) => {
+    tx.executeSql('SELECT id, flickr_id, owner, url_c, width_c, height_c FROM favoritePhotos ORDER BY RANDOM() LIMIT 20').then(([tx,results]) => {
       var len = results.rows.length;
 
       if (len > 0) {
@@ -227,6 +244,8 @@ class FirstProject extends React.Component {
   }
 
   showFavorites() {
+    this.setState({ favoritesCurrentlyOpen: true });
+    
     var that = this;
     db.transaction(that.queryFavorites.bind(this)).then(() => {
       that.state.progress.push("Processing completed");
@@ -270,6 +289,44 @@ class FirstProject extends React.Component {
   setFullscreenImageVisible(url) {
     StatusBarIOS.setHidden(true);
     this.setState({ fullscreenImageURL: url, fullscreenImageVisible: true })
+  }
+
+  disableHeartIcon() {
+    this.setState({ favoritesCurrentlyOpen: false });
+  }
+
+  makeHeartIcon() {
+
+    var heartColor = 'white';
+
+    if (this.state.favoritesCurrentlyOpen) {
+      heartColor = 'rgba(246,199,10,1)';
+    }
+
+    if (this.state.favoritesExist) {
+      return (
+        <Icon
+          name='ion|ios-heart'
+          size={ 28 }
+          color={ heartColor }
+          style={{
+            width: 32,
+            height: 40
+          }}
+        />
+      )  
+    }
+    return (
+      <Icon
+        name='ion|ios-heart-outline'
+        size={ 28 }
+        color='white'
+        style={{
+          width: 32,
+          height: 40
+        }}
+      />
+    )  
   }
 
   makeOverlayRevealIcon() {
@@ -406,7 +463,11 @@ class FirstProject extends React.Component {
 
 
 
-
+        <OptionTray
+          visible={ this.state.optionTrayVisible }
+          searchFunction={ this.initializeSearch.bind(this) }
+          closeOverlayFunction={ () => { this.setState({ optionTrayVisible: false }) } }
+        />
         <PhotoList
           style={{
             flex: 1 }}
@@ -415,14 +476,10 @@ class FirstProject extends React.Component {
           activityLoaderFunction={ this.setActivityLoaderStatus.bind(this) }
           ref="photoList"
           addToFavoritesFunction={ this.addToFavorites.bind(this) }
-
-          searchText={ this.state.searchText }
-
+          removeFromFavoritesFunction={ this.removeFromFavorites.bind(this) }
+          disableHeartIconFunction={ this.disableHeartIcon.bind(this) }
         />
-        <OptionTray
-          visible={ this.state.optionTrayVisible }
-          searchFunction={ this.initializeSearch.bind(this) }
-        />
+
         <View style={ styles.header }>
           <TouchableHighlight
             onPress={ this.showFavorites.bind(this) }
@@ -492,15 +549,7 @@ class FirstProject extends React.Component {
               width: 32,
               height: 40
             }}>
-            <Icon
-              name='ion|ios-heart'
-              size={ 28 }
-              color='white'
-              style={{
-                width: 32,
-                height: 40
-              }}
-              />
+            { this.makeHeartIcon() }
           </TouchableHighlight>
           <TouchableHighlight
             onPress={ this.toggleOptionTray.bind(this) }
@@ -533,6 +582,7 @@ var styles = StyleSheet.create({
   fullscreen: {
     flex: 1,
     alignItems: 'stretch',
+    backgroundColor: "#888",
   },
   title: {
     color: "white",

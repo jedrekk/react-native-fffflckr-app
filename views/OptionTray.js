@@ -37,7 +37,8 @@ export default class OptionTray extends React.Component {
 
   }
 
-  showMyFavs() {
+  closeOverlay() {
+    this.props.closeOverlayFunction();
 
   }
 
@@ -50,7 +51,7 @@ export default class OptionTray extends React.Component {
           color='white'
           style={{
             width: 40,
-            height: 45
+            height: 35
           }}
           />)
     }
@@ -61,7 +62,7 @@ export default class OptionTray extends React.Component {
         color='white'
         style={{
           width: 40,
-          height: 45
+          height: 35
         }}
         />)
   }
@@ -80,28 +81,53 @@ export default class OptionTray extends React.Component {
           flexDirection: "row",
           padding: 8,
           }}>
+          <TouchableHighlight
+            onPress={ this.closeOverlay.bind(this) }
+
+            underlayColor="#222"
+            style={{
+              marginRight: 10,
+              width: 30,
+              height: 30,
+            }}
+            >
+            <Icon
+              name='ion|close'
+              size={ 28 }
+              color='white'
+              style={{
+                width: 40,
+                height: 35
+              }}
+              />
+        </TouchableHighlight>
+
         <TextInput
           style={{
             flex: 1,
-            height: 45,
+            height: 35,
             borderColor: 'gray',
             backgroundColor: '#555',
             color: 'white',
-            paddingTop: 10,
-            paddingBottom: 10,
-            paddingRight: 20,
-            paddingLeft: 20,
+            fontSize: 13,
+            paddingTop: 3,
+            paddingBottom: 3,
+            paddingRight: 12,
+            paddingLeft: 12,
             marginLeft: 15,
             }}
+          autoFocus={ true }
           autoCapitalize='none'
           enablesReturnKeyAutomatically={ true }
           returnKeyType='search'
           placeholder='Start over with a search'
+          placeholderTextColor="#999"
           onSubmitEditing={ this.initializeSearch.bind(this) }
           onChangeText={(searchText) => { 
             this.setState( {searchText} );
 
-            if (searchText.toLowerCase() == this.state.lastSearchedText.toLowerCase()) {
+            if (searchText.toLowerCase() == this.state.lastSearchedText.toLowerCase()
+                && searchText.toLowerCase() != "") {
               this.setState({ reloadIconVisible: true })
             } else {
               this.setState({ reloadIconVisible: false })
@@ -118,45 +144,14 @@ export default class OptionTray extends React.Component {
             style={{
               marginRight: 10,
               marginLeft: 10,
-              width: 40,
-              height: 45,
+              width: 30,
+              height: 30,
             }}
             >
             { this.getSearchIcon() }
           </TouchableHighlight>
         </View>
-        <View
-        style={{ 
-          flex: 1,
-          alignItems: 'flex-start',
-          flexDirection: "row",
-          justifyContent: 'space-around',
-          padding: 8,
-          }}>
 
-          <TouchableHighlight
-            underlayColor="#222"
-            onPress={ this.showMyFavs.bind(this) }
-            >
-            <View style={
-              [
-                styles.navigationLink
-              ]
-            }><Text style={ styles.navigationLinkText } >Fav photos</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor="#222"
-            onPress={ this.showMyFavs.bind(this) }
-            >
-            <View style={
-              [
-                styles.navigationLink
-              ]
-            }><Text style={ styles.navigationLinkText } >Start over</Text>
-            </View>
-          </TouchableHighlight>
-        </View>
       </View>
       );
   }
@@ -192,7 +187,9 @@ var styles = StyleSheet.create({
     borderRadius: 20,
   },
   optionTray: {
-    height: 130,
+    borderTopWidth: 20,
+    borderColor: "#333",
+    height: 72,
     backgroundColor: "#222"
 
   },
